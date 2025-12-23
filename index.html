@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REDDIT GEN | MAHBEERUL HAQUE</title>
+    <title>Reddit Video Generator | Mahbeerul</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
         
         body { background-color: #09090b; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
+        /* Video Container (9:16) */
         .video-wrapper {
             width: 340px;
             height: 600px;
@@ -20,16 +21,18 @@
             background: #000;
         }
 
+        /* YouTube Background Layer */
         #player {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(1.8);
+            transform: translate(-50%, -50%) scale(1.5); /* Scale to fill 9:16 */
             pointer-events: none;
             width: 100%;
             height: 100%;
         }
 
+        /* Subtitle Overlay */
         #subtitle-overlay {
             position: absolute;
             inset: 0;
@@ -39,20 +42,19 @@
             text-align: center;
             padding: 30px;
             z-index: 20;
+            background: rgba(0,0,0,0.2); /* Slight tint for readability */
             pointer-events: none;
         }
 
         #subtitle-text {
-            font-size: 3rem;
+            font-size: 2.8rem;
             line-height: 1;
             text-transform: uppercase;
             letter-spacing: -2px;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0px 4px 10px rgba(0,0,0,1), 0px 0px 20px rgba(0,0,0,0.8);
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.8), 0px 0px 20px rgba(0,0,0,0.4);
         }
 
-        .highlight { color: #ff6600; } 
+        .highlight { color: #fbbf24; } /* Bright Yellow/Orange for impact */
 
         .glass-panel {
             background: rgba(24, 24, 27, 0.8);
@@ -66,23 +68,23 @@
     <div class="glass-panel p-8 rounded-[2.5rem] w-full max-w-md shadow-2xl">
         <div class="mb-6">
             <h1 class="text-2xl font-black tracking-tight italic">REDDIT<span class="text-orange-500">.</span>GEN</h1>
-            <p class="text-zinc-500 text-sm">Automated Minecraft Edition</p>
+            <p class="text-zinc-500 text-sm">Automated Minecraft Parkour Edition</p>
         </div>
 
         <textarea id="storyInput" 
             class="w-full h-56 bg-zinc-900/50 border border-zinc-700 rounded-3xl p-5 text-zinc-200 text-sm mb-6 outline-none focus:border-orange-500 transition-all resize-none" 
-            placeholder="Type your story here...">Type or paste your story here to see it pop up on the video!</textarea>
+            placeholder="Type your fictional story here...">I found a weird glitch in Minecraft today. Every time I placed a torch, a chat message appeared saying 'I see you.' I'm playing single player, and my internet is off. Then, I heard a door open in my real house.</textarea>
         
         <button onclick="generateVideo()" class="w-full bg-orange-600 hover:bg-orange-500 py-5 rounded-2xl font-black text-lg transition-all transform active:scale-95 shadow-xl shadow-orange-900/20">
             GENERATE VIDEO
         </button>
         
         <div class="mt-8 pt-6 border-t border-zinc-800 text-center">
-            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">MADE BY MAHBEERUL HAQUE</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Made by Mahbeerul</p>
         </div>
     </div>
 
-    <div class="video-wrapper border-4 border-orange-600">
+    <div class="video-wrapper border-4 border-zinc-800">
         <div id="player"></div>
         
         <div id="subtitle-overlay">
@@ -100,7 +102,7 @@
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                videoId: 's600FYgI5-s', 
+                videoId: 's600FYgI5-s', // Minecraft Parkour Video
                 playerVars: {
                     'autoplay': 1,
                     'controls': 0,
@@ -122,14 +124,15 @@
             const words = text.split(/\s+/);
             const utterance = new SpeechSynthesisUtterance(text);
             
-            utterance.rate = 0.9;
+            utterance.rate = 1.0;
             let wordCount = 0;
 
             utterance.onboundary = (event) => {
                 if (event.name === 'word') {
                     const word = words[wordCount];
                     if (word) {
-                        if (wordCount % 3 === 0) {
+                        // Bold subtitle style: Highlights every few words
+                        if (wordCount % 4 === 0) {
                             subtitleDisplay.innerHTML = `<span class="highlight">${word}</span>`;
                         } else {
                             subtitleDisplay.innerHTML = word;
@@ -140,14 +143,14 @@
             };
 
             utterance.onend = () => {
-                subtitleDisplay.innerHTML = "DONE";
-                player.pauseVideo();
+                subtitleDisplay.innerHTML = "WATCH AGAIN";
             };
 
-            player.seekTo(10);
+            // Reset video and speak
+            player.seekTo(0);
             player.playVideo();
             synth.speak(utterance);
         }
     </script>
 </body>
-</html>
+            </html>
