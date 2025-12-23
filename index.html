@@ -1,93 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reddit Video Generator | Mahbeerul</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reddit Video Generator</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
 
 body {
-    background-color: #09090b;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
+    background:#09090b;
+    color:white;
+    font-family:'Inter',sans-serif;
 }
 
-/* Video Container (9:16) */
-.video-wrapper {
-    width: 340px;
-    height: 600px;
-    position: relative;
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(255, 165, 0, 0.5), 0 0 60px 10px rgba(255,165,0,0.2);
-    background: #000;
+.video-wrapper{
+    width:340px;
+    height:600px;
+    position:relative;
+    border-radius:32px;
+    overflow:hidden;
+    background:black;
 }
 
-/* YouTube Background Layer */
-#player {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.5);
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
+#player{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(1.5);
+    width:100%;
+    height:100%;
+    pointer-events:none;
 }
 
-/* Subtitle Overlay */
-#subtitle-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 30px;
-    z-index: 20;
-    pointer-events: none;
-    background: transparent; /* video fully visible */
+#subtitle-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    z-index:10;
 }
 
-#subtitle-text {
-    font-size: 2.8rem;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: -1px;
-    text-shadow: 0px 4px 10px rgba(0,0,0,0.8), 0px 0px 20px rgba(0,0,0,0.4);
-    z-index: 30;
-
-    /* gradient on text only */
-    background: linear-gradient(270deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
-    background-size: 800% 800%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientShift 15s ease infinite;
+#subtitle-text{
+    font-size:2.6rem;
+    line-height:1;
+    text-transform:uppercase;
+    text-shadow:0 4px 10px rgba(0,0,0,.8);
 }
 
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.highlight { color: #fbbf24; }
-
-/* Yellow text for footer */
-.yellow-text {
-    color: #fbbf24;
-    font-weight: bold;
-}
-
-.glass-panel {
-    display: none; /* hide textarea/button/code under video */
+.highlight{
+    color:#fbbf24;
 }
 </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen gap-12 p-6">
 
+<body class="flex flex-col lg:flex-row items-center justify-center min-h-screen gap-10 p-6">
+
+<!-- LEFT PANEL -->
+<div class="bg-zinc-900/80 p-6 rounded-3xl w-full max-w-md">
+    <h1 class="text-2xl font-black mb-4">REDDIT.GEN</h1>
+
+    <textarea id="storyInput"
+        class="w-full h-56 bg-black border border-zinc-700 rounded-2xl p-4 mb-4"
+        placeholder="Paste your Reddit story / description here...">
+I found a weird glitch in Minecraft. Every time I placed a torch, it said I see you. I was alone. Then my door opened.
+    </textarea>
+
+    <button onclick="generateVideo()"
+        class="w-full bg-orange-600 py-4 rounded-2xl font-black text-lg">
+        GENERATE VIDEO
+    </button>
+</div>
+
+<!-- VIDEO -->
 <div class="video-wrapper border-4 border-zinc-800">
     <div id="player"></div>
     <div id="subtitle-overlay">
@@ -95,151 +86,58 @@ body {
     </div>
 </div>
 
-<!-- Only visible footer -->
-<div class="mt-4 text-center yellow-text">
-    Made by Mahbeerul
-</div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
 let player;
-const subtitleDisplay = document.getElementById('subtitle-text');
+const subtitleDisplay = document.getElementById("subtitle-text");
+const synth = window.speechSynthesis;
 
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        videoId: 's600FYgI5-s',
-        playerVars: { autoplay: 1, controls: 0, mute: 1, loop: 1, playlist: 's600FYgI5-s' },
-        events: { onReady: () => player.playVideo() }
+function onYouTubeIframeAPIReady(){
+    player = new YT.Player("player",{
+        videoId:"s600FYgI5-s",
+        playerVars:{
+            autoplay:1,
+            controls:0,
+            mute:1,
+            loop:1,
+            playlist:"s600FYgI5-s"
+        }
     });
 }
 
-function generateVideo() {
-    const text = "I found a weird glitch in Minecraft today. Every time I placed a torch, a chat message appeared saying 'I see you.' I'm playing single player, and my internet is off. Then, I heard a door open in my real house.";
-    if (!text.trim()) return;
+function generateVideo(){
+    const text = document.getElementById("storyInput").value.trim();
+    if(!text){ alert("Type something first"); return; }
 
-    // Stop previous AI voice if any
-    window.speechSynthesis.cancel();
+    synth.cancel();
+    subtitleDisplay.innerHTML = "";
 
-    // Start AI voice reading the description
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    window.speechSynthesis.speak(utterance);
-
-    // Subtitle animation
-    const lines = text.split('. ').filter(line => line.trim() !== '');
+    const words = text.split(" ");
     let index = 0;
 
-    const interval = setInterval(() => {
-        if (index >= lines.length) {
-            subtitleDisplay.innerText = "WATCH AGAIN";
-            clearInterval(interval);
-            return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1;
+
+    utterance.onboundary = (e)=>{
+        if(e.name === "word" && words[index]){
+            if(index % 4 === 0){
+                subtitleDisplay.innerHTML =
+                  `<span class="highlight">${words[index]}</span>`;
+            } else {
+                subtitleDisplay.innerHTML = words[index];
+            }
+            index++;
         }
+    };
 
-        const words = lines[index].split(' ');
-        subtitleDisplay.innerHTML = words.map((w,i) => i < 2 ? `<span class="highlight">${w}</span>` : w).join(' ');
-
-        index++;
-    }, 2000); // 2 sec per line
+    utterance.onend = ()=>{
+        subtitleDisplay.innerHTML = "WATCH AGAIN";
+    };
 
     player.seekTo(0);
     player.playVideo();
+    synth.speak(utterance);
 }
-
-// Auto-generate on page load
-window.onload = generateVideo;
 </script>
+
 </body>
 </html>
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-let player;
-const subtitleDisplay = document.getElementById('subtitle-text');
-
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        videoId: 's600FYgI5-s',
-        playerVars: { autoplay: 1, controls: 0, mute: 1, loop: 1, playlist: 's600FYgI5-s' },
-        events: { onReady: () => player.playVideo() }
-    });
-}
-
-function generateVideo() {
-    const text = document.getElementById('storyInput').value;
-    if (!text.trim()) return alert("Enter a story first!");
-
-    const lines = text.split('. ').filter(line => line.trim() !== '');
-    let index = 0;
-
-    const interval = setInterval(() => {
-        if (index >= lines.length) {
-            subtitleDisplay.innerText = "WATCH AGAIN";
-            clearInterval(interval);
-            return;
-        }
-
-        // Highlight first 1-2 words
-        const words = lines[index].split(' ');
-        subtitleDisplay.innerHTML = words.map((w, i) => i < 2 ? `<span class="highlight">${w}</span>` : w).join(' ');
-
-        index++;
-    }, 2000); // 2 sec per line
-
-    player.seekTo(0);
-    player.playVideo();
-}
-</script>
-</body>
-</html>                    'controls': 0,
-                    'mute': 1,
-                    'loop': 1,
-                    'playlist': 's600FYgI5-s'
-                },
-                events: {
-                    'onReady': (event) => event.target.playVideo()
-                }
-            });
-        }
-
-        function generateVideo() {
-            const text = document.getElementById('storyInput').value;
-            if (!text.trim()) return alert("Enter a story first!");
-
-            synth.cancel();
-            const words = text.split(/\s+/);
-            const utterance = new SpeechSynthesisUtterance(text);
-            
-            utterance.rate = 1.0;
-            let wordCount = 0;
-
-            utterance.onboundary = (event) => {
-                if (event.name === 'word') {
-                    const word = words[wordCount];
-                    if (word) {
-                        // Bold subtitle style: Highlights every few words
-                        if (wordCount % 4 === 0) {
-                            subtitleDisplay.innerHTML = `<span class="highlight">${word}</span>`;
-                        } else {
-                            subtitleDisplay.innerHTML = word;
-                        }
-                        wordCount++;
-                    }
-                }
-            };
-
-            utterance.onend = () => {
-                subtitleDisplay.innerHTML = "WATCH AGAIN";
-            };
-
-            // Reset video and speak
-            player.seekTo(0);
-            player.playVideo();
-            synth.speak(utterance);
-        }
-    </script>
-</body>
-            </html>
